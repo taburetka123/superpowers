@@ -5,6 +5,15 @@ description: Use when you have a spec or requirements for a multi-step task, bef
 
 # Writing Plans
 
+## Mode Detection
+
+**At the start of this skill, run:** `printenv SUPERPOWERS_AUTONOMOUS`
+
+- If the output is `true`: You are in **autonomous mode**. Announce: "Running writing-plans in autonomous mode." Follow the `[AUTONOMOUS]` annotations throughout this skill.
+- Otherwise: You are in **interactive mode** (default). Ignore all `[AUTONOMOUS]` annotations and follow the skill exactly as written.
+
+**In autonomous mode, log every decision** you make that would normally require human input. Write your reasoning inline so the human can review it later.
+
 ## Overview
 
 Write comprehensive implementation plans assuming the engineer has zero context for our codebase and questionable taste. Document everything they need to know: which files to touch for each task, code, testing, docs they might need to check, how to test it. Give them the whole plan as bite-sized tasks. DRY. YAGNI. TDD. Frequent commits.
@@ -142,6 +151,8 @@ After saving the plan, offer execution choice:
 **2. Inline Execution** - Execute tasks in this session using executing-plans, batch execution with checkpoints
 
 **Which approach?"**
+
+[AUTONOMOUS] Do not ask. Always choose Subagent-Driven development. Log: "Autonomous decision: selecting subagent-driven development (default for autonomous mode)." Proceed directly to invoking superpowers:subagent-driven-development.
 
 **If Subagent-Driven chosen:**
 - **REQUIRED SUB-SKILL:** Use superpowers:subagent-driven-development
