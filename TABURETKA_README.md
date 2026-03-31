@@ -36,6 +36,28 @@ Set the env var before launching Claude:
 SUPERPOWERS_AUTONOMOUS=true claude "/ticket RTM-1234"
 ```
 
+## Releasing a new version
+
+After making changes, bump the version in all three files and create a git tag:
+
+```bash
+# Update version in:
+#   package.json
+#   .claude-plugin/plugin.json
+#   .claude-plugin/marketplace.json
+
+git add -A && git commit -m "Bump version to X.Y.Z"
+git tag vX.Y.Z
+git push origin main --tags
+```
+
+Users then run:
+
+```bash
+claude plugin marketplace update taburetka-marketplace
+claude plugin update superpowers@taburetka-marketplace
+```
+
 ## Syncing with upstream
 
 ```bash
