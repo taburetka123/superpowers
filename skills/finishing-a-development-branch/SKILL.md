@@ -5,6 +5,15 @@ description: Use when implementation is complete, all tests pass, and you need t
 
 # Finishing a Development Branch
 
+## Mode Detection
+
+**At the start of this skill, run:** `printenv SUPERPOWERS_AUTONOMOUS`
+
+- If the output is `true`: You are in **autonomous mode**. Announce: "Running finishing-a-development-branch in autonomous mode." Follow the `[AUTONOMOUS]` annotations throughout this skill.
+- Otherwise: You are in **interactive mode** (default). Ignore all `[AUTONOMOUS]` annotations and follow the skill exactly as written.
+
+**In autonomous mode, log every decision** you make that would normally require human input. Write your reasoning inline so the human can review it later.
+
 ## Overview
 
 Guide completion of development work by presenting clear options and handling chosen workflow.
@@ -63,6 +72,14 @@ Which option?
 
 **Don't add explanation** - keep options concise.
 
+[AUTONOMOUS] Do not present options or wait for a choice. Automatically execute Option 2 (Push and Create PR) with these modifications:
+- Create a **draft** PR (`gh pr create --draft`)
+- Do **not** add reviewers
+- Do **not** clean up the worktree (the human will review the PR and worktree later)
+- Do **not** transition any Jira ticket status (stays in "In Development")
+- Log: "Autonomous: created draft PR — worktree preserved for human review."
+Skip Steps 3 and 5. Proceed directly from Step 2 (determine base branch) to executing the push and draft PR creation.
+
 ### Step 4: Execute Choice
 
 #### Option 1: Merge Locally
@@ -99,6 +116,19 @@ gh pr create --title "<title>" --body "$(cat <<'EOF'
 
 ## Test Plan
 - [ ] <verification steps>
+EOF
+)"
+
+# [AUTONOMOUS] Use --draft flag and include autonomous decisions summary:
+gh pr create --draft --title "<title>" --body "$(cat <<'EOF'
+## Summary
+<2-3 bullets of what changed>
+
+## Test Plan
+- [ ] <verification steps>
+
+## Autonomous Mode
+<summary of key autonomous decisions made during the session>
 EOF
 )"
 ```

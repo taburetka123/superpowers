@@ -5,6 +5,15 @@ description: Use when executing implementation plans with independent tasks in t
 
 # Subagent-Driven Development
 
+## Mode Detection
+
+**At the start of this skill, run:** `printenv SUPERPOWERS_AUTONOMOUS`
+
+- If the output is `true`: You are in **autonomous mode**. Announce: "Running subagent-driven-development in autonomous mode." Follow the `[AUTONOMOUS]` annotations throughout this skill.
+- Otherwise: You are in **interactive mode** (default). Ignore all `[AUTONOMOUS]` annotations and follow the skill exactly as written.
+
+**In autonomous mode, log every decision** you make that would normally require human input. Write your reasoning inline so the human can review it later.
+
 Execute plan by dispatching fresh subagent per task, with two-stage review after each: spec compliance review first, then code quality review.
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
@@ -109,6 +118,8 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
 
+- [AUTONOMOUS] Before escalating to the human, attempt to find the needed context yourself: search the codebase (grep, glob, read files), check Jira ticket details via MCP tools, read project documentation. If you find sufficient context, provide it and re-dispatch. Only escalate to the human if you genuinely cannot find the information after a thorough search. Log: "Autonomous: implementer needed context about X — found it in [source]" or "Autonomous: implementer needed context about X — could not find it, escalating."
+
 **BLOCKED:** The implementer cannot complete the task. Assess the blocker:
 1. If it's a context problem, provide more context and re-dispatch with the same model
 2. If the task requires more reasoning, re-dispatch with a more capable model
@@ -116,6 +127,12 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 4. If the plan itself is wrong, escalate to the human
 
 **Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
+
+- [AUTONOMOUS] Before escalating BLOCKED to the human (step 4), also try:
+  - Re-dispatch with an alternative approach hinted at in the plan or spec
+  - Simplify the task scope if part of it can be completed
+  - Check if the blocker is a test environment issue vs. a real design problem
+  Only escalate after at least one retry with a different strategy. Log all attempts and their outcomes.
 
 ## Prompt Templates
 
