@@ -74,7 +74,7 @@ Which option?
 
 [AUTONOMOUS] Do not present options or wait for a choice. Automatically execute Option 2 (Push and Create PR) with these modifications:
 - Create a **draft** PR (`gh pr create --draft`)
-- Do **not** add reviewers
+- After PR creation, GitHub will auto-assign reviewers via hook. Wait a few seconds, then remove all reviewers: `gh pr edit <pr-number> --remove-reviewer <reviewer>` for each assigned reviewer. The human will re-add reviewers when they finalize the PR.
 - Do **not** clean up the worktree (the human will review the PR and worktree later)
 - Do **not** transition any Jira ticket status (stays in "In Development")
 - Log: "Autonomous: created draft PR — worktree preserved for human review."
