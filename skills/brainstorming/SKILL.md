@@ -22,6 +22,8 @@ Start by understanding the current project context, then ask questions one at a 
 Do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY project regardless of perceived simplicity.
 
 [AUTONOMOUS] In autonomous mode, self-approval replaces user approval. You must still complete the full design process — present the design (to the conversation log), validate it against acceptance criteria, and explicitly state "Autonomous approval: design validated against acceptance criteria [list each criterion and how the design satisfies it]" before proceeding. The gate is satisfied by self-validation, not by skipping the design.
+
+[AUTONOMOUS] **Exception for DLQ tickets and error-silencing designs**: self-approval does NOT apply when the selected design silences an error. See the DLQ-silencing override in step 4 of the Checklist below — those designs require explicit human approval even in autonomous mode.
 </HARD-GATE>
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
@@ -39,6 +41,7 @@ You MUST create a task for each of these items and complete them in order:
    - [AUTONOMOUS] Self-answer clarifying questions using available context (Jira ticket description, acceptance criteria, codebase exploration). Log each question and your self-answer with reasoning. If a question genuinely cannot be answered from available context (missing critical information with no reasonable default), ask it — but exhaust context first.
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
    - [AUTONOMOUS] Still propose 2-3 approaches (in the conversation log), but select the simplest/most straightforward approach yourself. Log: "Autonomous decision: selected approach N because [reasoning]."
+   - [AUTONOMOUS] **DLQ-silencing override**: If the selected approach is any form of silencing an error (`try/catch + return`, `?: return`, `.orElse(null)`, `onErrorReturn`, skipping a handler branch, returning an empty result for an error path, filtering an item out of a batch before a downstream call), do NOT self-approve. Treat this as "requires human input" regardless of autonomous mode. Present the design to the user with the 6-question investigation from `~/.claude/rules/handling-dlq-bugs.md` filled in, and wait for their explicit approval before moving to step 5. Log: "Autonomous: error-silencing design detected, escalating to user per handling-dlq-bugs rule."
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
    - [AUTONOMOUS] Present the full design in the conversation log (for later review), but do not wait for approval after each section. Instead, self-validate each section against the Jira acceptance criteria and note any gaps.
 6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
