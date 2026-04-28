@@ -7,7 +7,7 @@ description: Use when implementation is complete, all tests pass, and you need t
 
 ## Mode Detection
 
-**At the start of this skill, run:** `printenv SUPERPOWERS_AUTONOMOUS`
+**At the start of this skill, run:** `echo "${SUPERPOWERS_AUTONOMOUS:-}"`
 
 - If the output is `true`: You are in **autonomous mode**. Announce: "Running finishing-a-development-branch in autonomous mode." Follow the `[AUTONOMOUS]` annotations throughout this skill.
 - Otherwise: You are in **interactive mode** (default). Ignore all `[AUTONOMOUS]` annotations and follow the skill exactly as written.

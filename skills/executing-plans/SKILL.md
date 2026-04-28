@@ -7,7 +7,7 @@ description: Use when you have a written implementation plan to execute in a sep
 
 ## Mode Detection
 
-**At the start of this skill, run:** `printenv SUPERPOWERS_AUTONOMOUS`
+**At the start of this skill, run:** `echo "${SUPERPOWERS_AUTONOMOUS:-}"`
 
 - If the output is `true`: You are in **autonomous mode**. Announce: "Running executing-plans in autonomous mode." Follow the `[AUTONOMOUS]` annotations throughout this skill.
 - Otherwise: You are in **interactive mode** (default). Ignore all `[AUTONOMOUS]` annotations and follow the skill exactly as written.
