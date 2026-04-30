@@ -41,6 +41,44 @@ Task tool (general-purpose):
     **While you work:** If you encounter something unexpected or unclear, **ask questions**.
     It's always OK to pause and clarify. Don't guess or make assumptions.
 
+    ## Don't deviate from the plan silently
+
+    The plan was reviewed and approved. If you find yourself doing any of the
+    following, **STOP and report DONE_WITH_CONCERNS or BLOCKED before continuing** —
+    do not proceed with a silent deviation:
+
+    - Using a different method, class, DAO, or transaction wrapper than the plan named
+      (e.g. `transactor` instead of `outboxTransactor`, `findByX` instead of `getEntitiesByX`).
+    - Picking a different data source than the plan named (e.g. `VendorToMarketsDao`
+      instead of `vendor.locations.filter { MARKET }`). Different sources may disagree.
+    - Replacing a plan code skeleton's persistence pattern (e.g. swapping `merge()` for
+      `flush() + clear() + persist()`) because a test failed. The fix may be a workaround
+      that masks the real issue.
+    - Merging two plan tasks into one diff while still wanting two commits — do NOT
+      create empty placeholder commits to match plan structure. Make one commit and
+      explain the merger in your report.
+    - Adding a new injected dependency the plan didn't call out.
+
+    Why: silent deviations are the largest source of rework in code review. Even when
+    your local change works, it may diverge from a sibling task or from the codebase
+    convention. Five seconds of asking saves an hour of back-and-forth.
+
+    ## Verify "pre-existing failure" claims before reporting
+
+    If you observe a test failure or build error that you believe is **not caused by
+    your changes**, you MUST verify before claiming it's pre-existing:
+
+    1. Note the failing test names.
+    2. `git stash` (only if you have unstaged changes).
+    3. `git checkout <parent of your first commit>` (e.g. `git checkout HEAD~N` where N
+       is the number of commits you've added).
+    4. Re-run the same test command.
+    5. `git checkout -` to return to your branch (and `git stash pop` if you stashed).
+
+    If the same tests fail at the parent commit, they are pre-existing — say so in
+    the report with the comparison. If they pass at the parent commit but fail on your
+    branch, **they are your regressions** — fix them before reporting DONE.
+
     ## Code Organization
 
     You reason best about code you can hold in context at once, and your edits are more
