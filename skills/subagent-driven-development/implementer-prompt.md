@@ -5,6 +5,7 @@ Use this template when dispatching an implementer subagent.
 ```
 Task tool (general-purpose):
   description: "Implement Task N: [task name]"
+  model: opus
   prompt: |
     You are implementing Task N: [task name]
 
