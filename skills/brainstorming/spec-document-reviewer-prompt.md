@@ -23,6 +23,7 @@ Task tool (general-purpose):
     | Clarity | Requirements ambiguous enough to cause someone to build the wrong thing |
     | Scope | Focused enough for a single plan — not covering multiple independent subsystems |
     | YAGNI | Unrequested features, over-engineering |
+    | Schema / data-shape evidence | If the spec reads or writes any existing table, proto message, or DTO, the spec MUST cite the production query that confirms the data shape (e.g. `SELECT COUNT(*) FROM table WHERE filter` returned a non-zero result) AND a grep of every existing reader/writer of any field being added. Mocked test data is not evidence. Missing this section = block. See `~/.claude/rules/investigation-evidence.md` § 5. |
 
     ## Calibration
 

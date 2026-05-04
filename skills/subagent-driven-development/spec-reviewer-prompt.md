@@ -53,6 +53,11 @@ Task tool (general-purpose):
     - Did they solve the wrong problem?
     - Did they implement the right feature but wrong way?
 
+    **Schema / data-shape regression (if the task touches existing tables, protos, or DTOs):**
+    - For every field added to a DTO / proto / entity: did they grep ALL existing readers and writers of that message and update each one? A new field silently dropped by a sibling `toEntity` / mapping helper is the most common rolling-deploy regression source. List the consumers and confirm each one carries the field through.
+    - For every table they read with a filter: do tests stub the DAO to return rows that match the filter? If yes, was the production data shape verified separately (e.g. via a `SELECT COUNT(*)` query in the spec's Evidence section)? Mocked rows passing tests is NOT evidence the code works in prod.
+    - See `~/.claude/rules/investigation-evidence.md` § 5 and `~/.claude/rules/workflow.md` "Schema / data-shape validation before design".
+
     **Verify by reading code, not by trusting report.**
 
     Report:
