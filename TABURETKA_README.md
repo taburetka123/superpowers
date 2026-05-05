@@ -14,7 +14,7 @@ Added `SUPERPOWERS_AUTONOMOUS=true` environment variable support across 5 skills
 | writing-plans | Auto-selects subagent-driven execution |
 | executing-plans | Self-resolves plan concerns and blockers before escalating |
 | subagent-driven-development | Self-finds context for NEEDS_CONTEXT, retries alternative approaches for BLOCKED |
-| finishing-a-development-branch | Auto-creates draft PR with no reviewers (removes auto-assigned reviewers), preserves worktree, doesn't transition Jira |
+| finishing-a-development-branch | Auto-creates ready-for-review PR (keeps auto-assigned reviewers), preserves worktree, transitions Jira to In Review per commit.md |
 
 ### Unchanged skills
 
@@ -26,7 +26,7 @@ Added `SUPERPOWERS_AUTONOMOUS=true` environment variable support across 5 skills
 
 Each modified skill checks `printenv SUPERPOWERS_AUTONOMOUS` at entry. If `true`, it follows `[AUTONOMOUS]` annotations that bypass human gates. Without the env var, everything works exactly as upstream.
 
-In autonomous mode, every decision that would normally require human input is logged with reasoning in the conversation, so the human can review the agent's choices in the draft PR or design doc.
+In autonomous mode, every decision that would normally require human input is logged with reasoning in the conversation, so the human can review the agent's choices in the PR or design doc.
 
 ## Usage
 

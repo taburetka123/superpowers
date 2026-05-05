@@ -73,12 +73,12 @@ Which option?
 **Don't add explanation** - keep options concise.
 
 [AUTONOMOUS] Do not present options or wait for a choice. Automatically execute Option 2 (Push and Create PR) with these modifications:
-- Create a **draft** PR (`gh pr create --draft`)
-- After PR creation, GitHub will auto-assign reviewers via hook. Wait a few seconds, then remove all reviewers: `gh pr edit <pr-number> --remove-reviewer <reviewer>` for each assigned reviewer. The human will re-add reviewers when they finalize the PR.
+- Create a **ready-for-review** PR (`gh pr create`, NOT `--draft`)
+- Keep auto-assigned reviewers in place
+- Run the `~/.claude/rules/commit.md` Jira transition to "In Review" after PR creation
 - Do **not** clean up the worktree (the human will review the PR and worktree later)
-- Do **not** transition any Jira ticket status (stays in "In Development")
-- Log: "Autonomous: created draft PR — worktree preserved for human review."
-Skip Steps 3 and 5. Proceed directly from Step 2 (determine base branch) to executing the push and draft PR creation.
+- Log: "Autonomous: created ready-for-review PR — worktree preserved for human review."
+Skip Steps 3 and 5. Proceed directly from Step 2 (determine base branch) to executing the push and PR creation.
 
 ### Step 4: Execute Choice
 
@@ -119,8 +119,8 @@ gh pr create --title "<title>" --body "$(cat <<'EOF'
 EOF
 )"
 
-# [AUTONOMOUS] Use --draft flag and include autonomous decisions summary:
-gh pr create --draft --title "<title>" --body "$(cat <<'EOF'
+# [AUTONOMOUS] Same command (no --draft); include autonomous decisions summary:
+gh pr create --title "<title>" --body "$(cat <<'EOF'
 ## Summary
 <2-3 bullets of what changed>
 
