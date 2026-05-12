@@ -20,6 +20,12 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 
 **Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
 
+## Hard gate: no inline task execution
+
+Once TaskCreate items exist for the plan, the orchestrator's first tool call for **any** task body MUST be `Agent`. Inline `Edit` / `Write` / `Bash` / `Read` against the codebase to implement a task is a violation — the whole point of this skill is to keep the orchestrator's context clean and give each task its own reviewable subagent. The orchestrator's only allowed direct tool calls are pre-flight setup (git fetch, dependency builds, plan re-read) and dispatch/review (`Agent` calls + reading their results).
+
+If you catch yourself about to `Edit` a source file after writing TaskCreate items: stop and dispatch an implementer subagent instead.
+
 ## When to Use
 
 ```dot
