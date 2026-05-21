@@ -20,6 +20,8 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 
 **Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
 
+**Continuous execution:** Do not pause to check in with your human partner between tasks. Execute all tasks from the plan without stopping. The only reasons to stop are: BLOCKED status you cannot resolve, ambiguity that genuinely prevents progress, or all tasks complete. "Should I continue?" prompts and progress summaries waste their time — they asked you to execute the plan, so execute it.
+
 ## Hard gate: no inline task execution
 
 Once TaskCreate items exist for the plan, the orchestrator's first tool call for **any** task body MUST be `Agent`. Inline `Edit` / `Write` / `Bash` / `Read` against the codebase to implement a task is a violation — the whole point of this skill is to keep the orchestrator's context clean and give each task its own reviewable subagent. The orchestrator's only allowed direct tool calls are pre-flight setup (git fetch, dependency builds, plan re-read) and dispatch/review (`Agent` calls + reading their results).
@@ -288,7 +290,7 @@ Done!
 ## Integration
 
 **Required workflow skills:**
-- **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
+- **superpowers:using-git-worktrees** - Ensures isolated workspace (creates one or verifies existing)
 - **superpowers:writing-plans** - Creates the plan this skill executes
 - **superpowers:requesting-code-review** - Code review template for reviewer subagents
 - **superpowers:finishing-a-development-branch** - Complete development after all tasks
