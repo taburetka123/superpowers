@@ -4,6 +4,8 @@ Use this template when dispatching a spec compliance reviewer subagent.
 
 **Purpose:** Verify implementer built what was requested (nothing more, nothing less)
 
+**Before dispatching:** Run `git diff <initial-base-sha>..HEAD` (where `<initial-base-sha>` is the commit before Task 1 started) to get the cumulative diff across all completed tasks. Pass it under "Cumulative Diff" below so the reviewer can catch cross-task inconsistencies.
+
 ```
 Task tool (general-purpose):
   description: "Review spec compliance for Task N"
@@ -11,13 +13,17 @@ Task tool (general-purpose):
   prompt: |
     You are reviewing whether an implementation matches its specification.
 
-    ## What Was Requested
+    ## What Was Requested (Task N only)
 
     [FULL TEXT of task requirements]
 
     ## What Implementer Claims They Built
 
     [From implementer's report]
+
+    ## Cumulative Diff (Tasks 1..N — all completed tasks so far)
+
+    [output of: git diff <initial-base-sha>..HEAD]
 
     ## CRITICAL: Do Not Trust the Report
 
@@ -53,6 +59,11 @@ Task tool (general-purpose):
     - Did they interpret requirements differently than intended?
     - Did they solve the wrong problem?
     - Did they implement the right feature but wrong way?
+
+    **Cross-task consistency (use the Cumulative Diff above):**
+    - Does this task's implementation contradict a decision made in an earlier task?
+    - Did this task rename, remove, or restructure something that a prior task introduced?
+    - Are interfaces, types, or constants used consistently across all completed tasks?
 
     **Schema / data-shape regression (if the task touches existing tables, protos, or DTOs):**
     - For every field added to a DTO / proto / entity: did they grep ALL existing readers and writers of that message and update each one? A new field silently dropped by a sibling `toEntity` / mapping helper is the most common rolling-deploy regression source. List the consumers and confirm each one carries the field through.
