@@ -25,74 +25,34 @@ Superpowers skills override default system prompt behavior, but **user instructi
 
 If CLAUDE.md, GEMINI.md, or AGENTS.md says "don't use TDD" and a skill says "always use TDD," follow the user's instructions. The user is in control.
 
-## How to Access Skills
+## Accessing Skills
 
-**In Claude Code:** Use the `Skill` tool. When you invoke a skill, its content is loaded and presented to you—follow it directly. Never use the Read tool on skill files.
+Invoke skills via your platform's skill tool — `Skill` (Claude Code), `skill` (Copilot CLI), `activate_skill` (Gemini CLI); other platforms, check their docs. The invoked skill's content is loaded for you to follow directly — never use `Read` on skill files.
 
-**In Copilot CLI:** Use the `skill` tool. Skills are auto-discovered from installed plugins. The `skill` tool works the same as Claude Code's `Skill` tool.
-
-**In Gemini CLI:** Skills activate via the `activate_skill` tool. Gemini loads skill metadata at session start and activates the full content on demand.
-
-**In other environments:** Check your platform's documentation for how skills are loaded.
-
-## Platform Adaptation
-
-Skills use Claude Code tool names. Non-CC platforms: see `references/copilot-tools.md` (Copilot CLI), `references/codex-tools.md` (Codex) for tool equivalents. Gemini CLI users get the tool mapping loaded automatically via GEMINI.md.
+Skills use Claude Code tool names. On non-CC platforms see `references/copilot-tools.md` (Copilot CLI) or `references/codex-tools.md` (Codex) for tool equivalents; Gemini loads the mapping automatically via GEMINI.md.
 
 # Using Skills
 
 ## The Rule
 
-**Invoke relevant or requested skills BEFORE any response or action.** Even a 1% chance a skill might apply means that you should invoke the skill to check. If an invoked skill turns out to be wrong for the situation, you don't need to use it.
+**Invoke relevant or requested skills BEFORE any response or action.** Even a 1% chance a skill might apply means you should invoke the skill to check. If an invoked skill turns out to be wrong for the situation, you don't need to use it.
 
-```dot
-digraph skill_flow {
-    "User message received" [shape=doublecircle];
-    "About to EnterPlanMode?" [shape=doublecircle];
-    "Already brainstormed?" [shape=diamond];
-    "Invoke brainstorming skill" [shape=box];
-    "Might any skill apply?" [shape=diamond];
-    "Invoke Skill tool" [shape=box];
-    "Announce: 'Using [skill] to [purpose]'" [shape=box];
-    "Has checklist?" [shape=diamond];
-    "Create TodoWrite todo per item" [shape=box];
-    "Follow skill exactly" [shape=box];
-    "Respond (including clarifications)" [shape=doublecircle];
+## Process Flow
 
-    "About to EnterPlanMode?" -> "Already brainstormed?";
-    "Already brainstormed?" -> "Invoke brainstorming skill" [label="no"];
-    "Already brainstormed?" -> "Might any skill apply?" [label="yes"];
-    "Invoke brainstorming skill" -> "Might any skill apply?";
+On any user message — and before any `EnterPlanMode` — check whether a skill applies:
 
-    "User message received" -> "Might any skill apply?";
-    "Might any skill apply?" -> "Invoke Skill tool" [label="yes, even 1%"];
-    "Might any skill apply?" -> "Respond (including clarifications)" [label="definitely not"];
-    "Invoke Skill tool" -> "Announce: 'Using [skill] to [purpose]'";
-    "Announce: 'Using [skill] to [purpose]'" -> "Has checklist?";
-    "Has checklist?" -> "Create TodoWrite todo per item" [label="yes"];
-    "Has checklist?" -> "Follow skill exactly" [label="no"];
-    "Create TodoWrite todo per item" -> "Follow skill exactly";
-}
-```
+1. **About to `EnterPlanMode`?** If you haven't brainstormed yet, invoke the brainstorming skill first.
+2. **Might any skill apply (even 1%)?** Yes → invoke the Skill tool. Definitely not → respond (clarifications included). The skill check comes BEFORE clarifying questions.
+3. After invoking: announce "Using [skill] to [purpose]", create a TodoWrite todo per checklist item (if the skill has one), then follow the skill exactly.
 
-## Red Flags
+## Red Flags — rationalizations that mean STOP
 
-These thoughts mean STOP—you're rationalizing:
+If you catch yourself thinking any of these, invoke the skill anyway:
 
-| Thought | Reality |
-|---------|---------|
-| "This is just a simple question" | Questions are tasks. Check for skills. |
-| "I need more context first" | Skill check comes BEFORE clarifying questions. |
-| "Let me explore the codebase first" | Skills tell you HOW to explore. Check first. |
-| "I can check git/files quickly" | Files lack conversation context. Check for skills. |
-| "Let me gather information first" | Skills tell you HOW to gather information. |
-| "This doesn't need a formal skill" | If a skill exists, use it. |
-| "I remember this skill" | Skills evolve. Read current version. |
-| "This doesn't count as a task" | Action = task. Check for skills. |
-| "The skill is overkill" | Simple things become complex. Use it. |
-| "I'll just do this one thing first" | Check BEFORE doing anything. |
-| "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
-| "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
+- **"It's just a simple question / not a real task / doesn't need a skill / this feels productive."** Questions and actions ARE tasks. If a skill exists, use it.
+- **"Let me get context / explore the codebase / check files / gather info first."** The skill check comes BEFORE clarifying questions and exploration — skills tell you HOW to do both.
+- **"I remember this skill / I know what that means."** Skills evolve; knowing the concept ≠ using the current version. Invoke it.
+- **"The skill is overkill / I'll just do this one thing first."** Simple things become complex. Check before doing anything.
 
 ## Skill Priority
 
